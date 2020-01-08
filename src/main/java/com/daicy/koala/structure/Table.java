@@ -29,4 +29,6 @@ public interface Table {
 
     public List<Column> getColumnList();
 
+    public int getColumnIndex(String columnName);
+
 }

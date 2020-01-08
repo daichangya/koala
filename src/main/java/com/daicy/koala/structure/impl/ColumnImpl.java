@@ -13,6 +13,7 @@ public class ColumnImpl implements Column {
     Boolean isIndexed;
     Boolean isId;
     int position;
+    private String aggType = "";
 
     public ColumnImpl(String columnName, String dataType, Object defaultValue, Boolean isIndexed, Boolean isId, int position) {
         this.columnName = columnName;
@@ -23,6 +24,16 @@ public class ColumnImpl implements Column {
         this.position=position;
     }
 
+    public ColumnImpl(String columnName) {
+        this.columnName = columnName;
+    }
+
+    public ColumnImpl(String columnName, String aggType) {
+        this.columnName = columnName;
+        this.aggType = aggType;
+    }
+
+    @Override
     public String getColumnName() {
         return columnName;
     }
@@ -31,6 +42,7 @@ public class ColumnImpl implements Column {
         this.columnName = columnName;
     }
 
+    @Override
     public String getDataType() {
         return dataType;
     }
@@ -39,6 +51,7 @@ public class ColumnImpl implements Column {
         this.dataType = dataType;
     }
 
+    @Override
     public Object getDefaultValue() {
         return defaultValue;
     }
@@ -47,6 +60,7 @@ public class ColumnImpl implements Column {
         this.defaultValue = defaultValue;
     }
 
+    @Override
     public Boolean getIsIndexed() {
         return isIndexed;
     }
@@ -55,6 +69,7 @@ public class ColumnImpl implements Column {
         this.isIndexed = isIndexed;
     }
 
+    @Override
     public Boolean getIsId() {
         return isId;
     }
@@ -63,11 +78,22 @@ public class ColumnImpl implements Column {
         this.isId = isId;
     }
 
+    @Override
     public int getPosition() {
         return position;
     }
 
+    @Override
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    @Override
+    public String getAggType() {
+        return aggType;
+    }
+
+    public void setAggType(String aggType) {
+        this.aggType = aggType;
     }
 }

@@ -3,6 +3,8 @@ package com.daicy.koala.structure.impl;
 import com.daicy.koala.exception.MyException;
 import com.daicy.koala.structure.Column;
 import com.daicy.koala.structure.Row;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,9 @@ import java.util.List;
  * Created by amd on 9/10/15.
  */
 public class RowImpl implements Row {
+
+    private static final Logger logger = LoggerFactory.getLogger(RowImpl.class);
+
 
     private static final String COLUMN_INDEX_EXCEEDED = "Total column present are : " ;
     private static final String NO_SUCH_COLUMN_EXIST = "No such column exist by name : " ;
@@ -38,23 +43,49 @@ public class RowImpl implements Row {
         this.rowData.addAll(rowData);
     }
 
-    public void addData(String column , Object value) throws MyException {
-
-        int pos = getColumnByName(column).getPosition();
-        rowData.add(pos, value);
+    public void addData(int columnIndex , Object value){
+        rowData.add(columnIndex, value);
     }
 
 
+    public void addData(String column , Object value){
+
+        int pos = 0;
+        try {
+            pos = getColumnByName(column).getPosition();
+        } catch (MyException e) {
+            logger.error("addData",e);
+        }
+        rowData.add(pos, value);
+    }
+
+    public void setData(String column, Object value) {
+        int pos = 0;
+        try {
+            pos = getColumnByName(column).getPosition();
+        } catch (MyException e) {
+            logger.error("setData", e);
+        }
+        rowData.set(pos, value);
+    }
+
+
+
     @Override
-    public Object getColumnValue(int index) throws MyException {
+    public Object getColumnValue(int index){
         if(index > columnList.size())
-            throw new MyException(COLUMN_INDEX_EXCEEDED+index);
+            logger.error("getColumnValue error", new MyException(COLUMN_INDEX_EXCEEDED+index));
         return rowData.get(index);
     }
 
     @Override
-    public Object getColumnValue(String columnName) throws MyException {
-        Column column = getColumnByName(columnName);
+    public Object getColumnValue(String columnName) {
+        Column column = null;
+        try {
+            column = getColumnByName(columnName);
+        } catch (MyException e) {
+            logger.error(" error ", e);
+        }
         return rowData.get(column.getPosition());
     }
 

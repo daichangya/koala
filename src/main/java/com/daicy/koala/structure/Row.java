@@ -9,9 +9,9 @@ import java.util.List;
  */
 public interface Row {
 
-    public Object getColumnValue(int index) throws MyException;
+    public Object getColumnValue(int index);
 
-    public Object getColumnValue(String columnName) throws MyException;
+    public Object getColumnValue(String columnName);
 
     public List<Object> getAllColumnValue();
 

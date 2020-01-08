@@ -44,7 +44,7 @@ public class TableImpl implements Table {
         this.indexMap = new HashMap<String, SortedMap>();
 
         int position = 0;
-        columnList.add(new ColumnImpl(INDEX_COLUMN, "Integer", null, false, true, position));
+        columnList.add(new ColumnImpl(INDEX_COLUMN, "Long", null, false, true, position));
 
         for (String column : columns) {
             if (column.equalsIgnoreCase(INDEX_COLUMN) == false) {
@@ -91,21 +91,22 @@ public class TableImpl implements Table {
 
     @Override
     public Table selectRowQuery(String columnName, Object value) throws MyException {
-        return this.selectRowQuery(SqlKind.EQUALS,columnName, value);
+        return this.selectRowQuery(SqlKind.EQUALS, columnName, value);
     }
 
     @Override
-    public Table selectRowQuery(SqlKind sqlKind,Object... value) throws MyException {
+    public Table selectRowQuery(SqlKind sqlKind, Object... value) throws MyException {
         if (value.length < 1 || null == value[0] || StringUtils.isEmpty(value[0].toString())) {
             throw new MyException(ID_COLUMN_DEFAULT_EXCEPTION);
         }
         String columnName = value[0].toString().toLowerCase();
-        List<Integer> ids = new LinkedList<Integer>();
-        int position = -1;
-
+        List ids = new LinkedList();
+        Column queryColumn = null;
         for (Column column : columnList) {
-            if (column.getColumnName().equalsIgnoreCase(columnName))
-                position = column.getPosition();
+            if (column.getColumnName().equalsIgnoreCase(columnName)) {
+                queryColumn = column;
+                break;
+            }
         }
 
         // if indexing is present on column
@@ -116,25 +117,30 @@ public class TableImpl implements Table {
                 ids = new BasicIndexQuery.IndexConditionNE(this.indexMap, value).getIdList();
             } else if (SqlKind.GREATER_THAN.equals(sqlKind)) {
                 ids = new BasicIndexQuery.IndexConditionGT(this.indexMap, value).getIdList();
-            }else if (SqlKind.GREATER_THAN_OR_EQUAL.equals(sqlKind)) {
+            } else if (SqlKind.GREATER_THAN_OR_EQUAL.equals(sqlKind)) {
                 ids = new BasicIndexQuery.IndexConditionGE(this.indexMap, value).getIdList();
-            }else if (SqlKind.LESS_THAN.equals(sqlKind)) {
+            } else if (SqlKind.LESS_THAN.equals(sqlKind)) {
                 ids = new BasicIndexQuery.IndexConditionLT(this.indexMap, value).getIdList();
-            }else if (SqlKind.LESS_THAN_OR_EQUAL.equals(sqlKind)) {
+            } else if (SqlKind.LESS_THAN_OR_EQUAL.equals(sqlKind)) {
                 ids = new BasicIndexQuery.IndexConditionLE(this.indexMap, value).getIdList();
-            }else if (SqlKind.BETWEEN.equals(sqlKind)) {
+            } else if (SqlKind.BETWEEN.equals(sqlKind)) {
                 ids = new BasicIndexQuery.IndexConditionBW(this.indexMap, value).getIdList();
-            }else if (SqlKind.IN.equals(sqlKind)) {
+            } else if (SqlKind.IN.equals(sqlKind)) {
                 ids = new BasicIndexQuery.IndexConditionIN(this.indexMap, value).getIdList();
-            }else if (SqlKind.NOT_IN.equals(sqlKind)) {
+            } else if (SqlKind.NOT_IN.equals(sqlKind)) {
                 ids = new BasicIndexQuery.IndexConditionNIN(this.indexMap, value).getIdList();
+            } else if (SqlKind.LIKE.equals(sqlKind) &&
+                    null != queryColumn && "String".equals(queryColumn.getDataType())
+                    && value[1] instanceof String && !((String) value[1]).startsWith("%")) {
+                ids = new BasicIndexQuery.IndexConditionLK(this.indexMap, value).getIdList();
             }
         }
         // else search normal
         else {
             for (Row row : rows.values()) {
-                if (row.getColumnValue(position).equals(value))
-                    ids.add((Integer) row.getColumnValue(INDEX_POSITION));
+                if (row.getColumnValue(queryColumn.getPosition()).equals(value[1])) {
+                    ids.add(row.getColumnValue(INDEX_POSITION));
+                }
             }
         }
         List<String> columnNames = new ArrayList<String>();
@@ -295,6 +301,16 @@ public class TableImpl implements Table {
 
     public List<Column> getColumnList() {
         return columnList;
+    }
+
+    @Override
+    public int getColumnIndex(String columnName) {
+        for (Column colunm:columnList) {
+            if(colunm.getColumnName().equalsIgnoreCase(columnName)){
+                return colunm.getPosition();
+            }
+        }
+        return -1;
     }
 
     public void setColumnList(List<Column> columnList) {

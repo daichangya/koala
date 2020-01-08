@@ -17,4 +17,8 @@ public interface Column {
 
     public int getPosition();
 
+    public String getAggType();
+
+
+    public void setPosition(int position);
 }

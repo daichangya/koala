@@ -17,7 +17,6 @@ package com.daicy.koala.indexer;
 
 import com.google.common.collect.Maps;
 import org.apache.calcite.sql.SqlKind;
-import org.checkerframework.checker.units.qual.K;
 
 import java.util.*;
 
@@ -281,4 +280,31 @@ public abstract class BasicIndexQuery implements IndexQuery {
         }
     }
 
+    public static final class IndexConditionLK extends BasicIndexQuery {
+
+        protected final HashMap<String, SortedMap> indexMap;
+
+        public IndexConditionLK(final HashMap<String, SortedMap> indexMap, final Object... operands) {
+            super(SqlKind.LIKE, operands);
+            this.indexMap = indexMap;
+        }
+
+        @Override
+        public SqlKind getOperator() {
+            return SqlKind.LIKE;
+        }
+
+        @Override
+        SortedMap resultMap() {
+            SortedMap resultMap = Maps.newTreeMap(indexMap.get(getOperand(0)));
+            String param = (String) getOperand(1);
+            param = param.substring(0, param.length() - 1);
+            String end = getStringAdd1(param);
+            return resultMap.subMap(param, end);
+        }
+    }
+
+    private static String getStringAdd1(String param) {
+        return param.substring(0, param.length() - 1) + (char)(param.charAt(param.length() - 1) + 1);
+    }
 }

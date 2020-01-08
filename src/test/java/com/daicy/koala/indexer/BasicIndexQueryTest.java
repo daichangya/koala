@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -30,13 +32,16 @@ public class BasicIndexQueryTest {
         table.addRow("Spyke", 101);
         table.addRow("Kyle", 102);
         table.addRow("Johnson", 103);
+        table.addRow("Kyle", 104);
+        table.addRow("Koala", 104);
         table.createIndex("roll");
+        table.createIndex("name");
     }
 
     @Test
     public void testEq() throws MyException {
 
-        List<Row> rows = table.selectRowQuery("roll", 102).getSelectedRows();
+        List<Row> rows = table.selectRowQuery("roll", 104).selectRowQuery("name","Kyle").getSelectedRows();
         for (Row row : rows) {
             for (Column column : row.getColumnList()) {
                 System.out.print(column.getColumnName() + "-" + row.getColumnValue(column.getColumnName()) + " # ");
@@ -45,6 +50,32 @@ public class BasicIndexQueryTest {
         }
         assertEquals(rows.size(), 1);
     }
+
+
+    @Test
+    public void testEq2() throws MyException {
+
+        List<Row> rows = table.selectRowQuery("roll", 104).getSelectedRows();
+        Map<Object,List<Row>> groupByResult=  rows.stream().collect(Collectors.groupingBy(row -> row.getColumnValue("roll")));
+        for (Object key : groupByResult.keySet()) {
+            System.out.println(key);
+            List<Row> rowList = groupByResult.get(key);
+            for (Row row : rowList) {
+                for (Column column : row.getColumnList()) {
+                    System.out.print(column.getColumnName() + "-" + row.getColumnValue(column.getColumnName()) + " # ");
+                }
+                System.out.println();
+            }
+        }
+//        for (Row row : rows) {
+//            for (Column column : row.getColumnList()) {
+//                System.out.print(column.getColumnName() + "-" + row.getColumnValue(column.getColumnName()) + " # ");
+//            }
+//            System.out.println();
+//        }
+//        assertEquals(rows.size(), 2);
+    }
+
 
 
     @Test
@@ -136,5 +167,18 @@ public class BasicIndexQueryTest {
             System.out.println();
         }
         assertEquals(rows.size(), 2);
+    }
+
+    @Test
+    public void testLk() throws MyException {
+
+        List<Row> rows = table.selectRowQuery(SqlKind.LIKE, "name", "K%").getSelectedRows();
+        for (Row row : rows) {
+            for (Column column : row.getColumnList()) {
+                System.out.print(column.getColumnName() + "-" + row.getColumnValue(column.getColumnName()) + " # ");
+            }
+            System.out.println();
+        }
+        assertEquals(rows.size(), 3);
     }
 }
