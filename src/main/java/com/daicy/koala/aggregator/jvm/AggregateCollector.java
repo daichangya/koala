@@ -38,13 +38,9 @@ public class AggregateCollector<T> implements Collector<Row, Row, Double[]> {
     }
 
     private double toDouble(Object o) {
-        if (o instanceof Double) {
-            return ((Double) o).doubleValue();
-        }else if (o instanceof Long) {
-            return ((Long) o).doubleValue();
-        } else if (o instanceof Integer) {
-            return ((Integer) o).doubleValue();
-        } else {
+        if (o instanceof Number) {
+            return ((Number) o).doubleValue();
+        }else {
             double result = 0;
             try {
                 result = Double.parseDouble((String) o);
