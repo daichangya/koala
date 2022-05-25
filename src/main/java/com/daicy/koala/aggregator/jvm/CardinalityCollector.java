@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 /**
- * Created by yfyuan on 2017/3/30.
+ * Created by changya.dai on 2017/3/30.
  */
 public class CardinalityCollector<T> implements Collector<T, Set<T>, Integer> {
 

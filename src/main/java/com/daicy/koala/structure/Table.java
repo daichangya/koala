@@ -6,7 +6,7 @@ import org.apache.calcite.sql.SqlKind;
 import java.util.List;
 
 /**
- * Created by amd on 9/9/15.
+ * Created by changya.dai on 9/9/15.
  */
 public interface Table {
 

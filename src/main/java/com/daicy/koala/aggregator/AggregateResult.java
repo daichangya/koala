@@ -5,7 +5,7 @@ import com.daicy.koala.structure.Column;
 import java.util.List;
 
 /**
- * Created by yfyuan on 2017/1/18.
+ * Created by changya.dai on 2017/1/18.
  */
 public class AggregateResult {
     private List<Column> columnList;

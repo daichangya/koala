@@ -1,7 +1,7 @@
 package com.daicy.koala.structure;
 
 /**
- * Created by amd on 9/9/15.
+ * Created by changya.dai on 9/9/15.
  */
 public interface Column {
 

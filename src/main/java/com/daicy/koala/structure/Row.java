@@ -5,7 +5,7 @@ import com.daicy.koala.exception.MyException;
 import java.util.List;
 
 /**
- * Created by amd on 9/10/15.
+ * Created by changya.dai on 9/10/15.
  */
 public interface Row {
 

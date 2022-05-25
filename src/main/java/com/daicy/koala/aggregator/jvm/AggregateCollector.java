@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Created by yfyuan on 2017/1/20.
+ * Created by changya.dai
  */
 public class AggregateCollector<T> implements Collector<Row, Row, Double[]> {
 

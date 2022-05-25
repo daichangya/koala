@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * Created by yfyuan on 2017/1/18.
+ * Created by changya.dai on 2017/1/18.
  */
 public class JvmAggregator extends InnerAggregator {
 

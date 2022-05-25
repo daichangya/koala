@@ -3,7 +3,7 @@ package com.daicy.koala.structure.impl;
 import com.daicy.koala.structure.Column;
 
 /**
- * Created by amd on 9/9/15.
+ * Created by changya.dai on 9/9/15.
  */
 public class ColumnImpl implements Column {
 
